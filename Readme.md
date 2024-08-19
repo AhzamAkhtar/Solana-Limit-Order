@@ -79,7 +79,8 @@ This project is a smart contract built on the Solana, designed to facilitate lim
     ```bash
       const programId = new PublicKey(""); // Enter Your ProgramID
                                   &
-      export const wallet_for_buyer = ""; //Enter the mint for token_x
+      // token_x is the token that seller wants to sell                            
+      mint_x = new PublicKey(""); // Enter the mint for token_x 
     ```
    
 4. Finally Test the Smart Contract by doing
