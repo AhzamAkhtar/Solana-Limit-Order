@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token_interface::TokenInterface;
 use anchor_spl::token_interface::{transfer_checked, Mint, TokenAccount, TransferChecked};
-
+use crate::errors::CustomErrors;
 #[derive(Accounts)]
 pub struct TransferTokenToVault<'info> {
     #[account(mut)]
@@ -47,9 +47,9 @@ pub struct TransferTokenToVault<'info> {
 impl<'info> TransferTokenToVault<'info> {
     pub fn transfer_token(&mut self) -> Result<()> {
         // Assert that the amount is greater than zero
-        assert!(
+        require!(
             self.config.amount > 0,
-            "Transfer amount must be greater than zero"
+            CustomErrors::ZeroAmount
         );
 
         let cpi_accounts = TransferChecked {
