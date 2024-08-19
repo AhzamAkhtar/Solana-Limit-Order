@@ -1,4 +1,9 @@
 use anchor_lang::prelude::*;
+pub mod state;
+pub use state::*;
+
+pub mod context;
+pub use context::*;
 
 declare_id!("CAxcPk6uf5a92YswtUVB94LCWD3sUJinpYJ8qLdpPCZA");
 
@@ -6,10 +11,15 @@ declare_id!("CAxcPk6uf5a92YswtUVB94LCWD3sUJinpYJ8qLdpPCZA");
 pub mod cega {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        Ok(())
+    pub fn initialize(
+        ctx: Context<Initialize>,
+        seed: u64,
+        authority: Option<Pubkey>,
+    ) -> Result<()> {
+        ctx.accounts.init(&ctx.bumps, seed, authority)
+    }
+
+    pub fn transfer_token_to_vault(ctx: Context<TransferTokenToVault>, amount: u64) -> Result<()> {
+        ctx.accounts.transfer_token(amount)
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}
