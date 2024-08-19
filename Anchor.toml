@@ -11,7 +11,7 @@ cega = "CAxcPk6uf5a92YswtUVB94LCWD3sUJinpYJ8qLdpPCZA"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "localnet"
 wallet = "/home/ahzam/.config/solana/id.json"
 
 [scripts]

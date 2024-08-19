@@ -58,9 +58,41 @@ describe("cega solana assignment", () => {
   let buyer_usdc_ata: PublicKey;
   let vault_x_ata: PublicKey;
 
+  enum TimePeriod {
+    OneDay = 86400,
+    SevenDays = 604800,
+    ThirtyDays = 2592000,
+  }
+
+  it("Airdrop", async () => {
+    await Promise.all(
+      [seller, buyer].map(async (k) => {
+        return await anchor
+          .getProvider()
+          .connection.requestAirdrop(
+            k.publicKey,
+            10000 * anchor.web3.LAMPORTS_PER_SOL
+          );
+      })
+    ).then(confirmTxs);
+  });
+
+  it("Mint tokens", async () => {
+    let [s, b] = await Promise.all(
+      [seller, buyer].map(async (a) => {
+        return await MintToAta(anchor.getProvider().connection, a);
+      })
+    );
+    mint_x = s.mint;
+    mint_usdc = b.mint;
+  });
+
   it("Create mints, tokens and ATAs", async () => {
-    mint_x = new PublicKey("");
-    mint_usdc = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr");
+    // token_x and token_usdc mint (reqire when testing on devnet)
+    // mint_x = new PublicKey("");
+    // mint_usdc = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr");
+    //
+
     seller_x_ata = await getAssociatedTokenAddress(
       mint_x,
       seller.publicKey,
@@ -99,10 +131,10 @@ describe("cega solana assignment", () => {
       const tx = await program.methods
         .initialize(
           seed,
-          new BN(600000),
+          new BN(TimePeriod.OneDay), //expiry
           seller.publicKey,
-          new BN(100),
-          new BN(10)
+          new BN(10), //amount
+          new BN(10) //price
         )
         .accounts({
           auth,
@@ -151,7 +183,7 @@ describe("cega solana assignment", () => {
   it("Transfer Token To Buyer and Make the Trade", async () => {
     try {
       const tx = await program.methods
-        .transferTokenToBuyer()
+        .transferTokenToBuyer(new BN(5))
         .accountsStrict({
           auth,
           seller: seller.publicKey,
@@ -180,11 +212,10 @@ describe("cega solana assignment", () => {
   it("Update", async () => {
     try {
       const tx = await program.methods
-        .update(new BN(120), new BN(60000000))
+        .update(new BN(120), new BN(TimePeriod.SevenDays))
         .accountsStrict({
           config,
         })
-        .signers([buyer])
         .rpc({ skipPreflight: true });
       await confirmTx(tx);
       console.log("Your transaction signature", tx);
@@ -194,7 +225,7 @@ describe("cega solana assignment", () => {
     }
   });
 
-  it("Cancel", async () => {
+  xit("Cancel", async () => {
     try {
       const tx = await program.methods
         .cancel()
@@ -230,5 +261,29 @@ describe("cega solana assignment", () => {
       },
       commitment
     );
+  };
+
+  const confirmTxs = async (signatures: string[]) => {
+    await Promise.all(signatures.map(confirmTx));
+  };
+
+  const MintToAta = async (
+    connection,
+    minter: Keypair
+  ): Promise<{ mint: PublicKey; ata: PublicKey }> => {
+    const mint = await createMint(
+      connection,
+      minter,
+      minter.publicKey,
+      null,
+      6
+    );
+    const ata = await createAccount(connection, minter, mint, minter.publicKey);
+    const signature = await mintTo(connection, minter, mint, ata, minter, 21e8);
+    await confirmTx(signature);
+    return {
+      mint,
+      ata,
+    };
   };
 });

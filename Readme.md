@@ -13,22 +13,22 @@ This project is a smart contract built on the Solana, designed to facilitate lim
 ## How It Works
 
 1. **Initialization**:
-  - The seller initializes the order by specifying the details of the trade, including the token amount, price, and expiration time.
-  - A vault is created to hold the tokens until the trade is executed or canceled.
+- The seller initializes the order by specifying the details of the trade, including the token amount, price, and expiration time.
+- A vault is created to hold the tokens until the trade is executed or canceled.
 
 2. **TransferToken**:
-  - The seller transfers the specified amount of tokens to the vault.
+- The seller transfers the specified amount of tokens to the vault.
 
 3. **Claim**:
-  - The buyer claims the tokens by sending the required amount of USDC to the seller.
-  - The tokens are transferred from the vault to the buyer if the expiration time has not been reached.
-  - If the expiration time has passed, the trade is no longer valid.
+- The buyer claims the tokens by sending the required amount of USDC to the seller.
+- The tokens are transferred from the vault to the buyer if the expiration time has not been reached.
+- If the expiration time has passed, the trade is no longer valid.
 
 4. **Update**:
-  - The seller can update the price per token and the expiration time before the trade is executed.
+- The seller can update the price per token and the expiration time before the trade is executed.
 
 5. **Close**:
-  - If the partial trade does not happen, the seller can close the order, which returns the tokens to the seller, closes the vault, and refunds the lamports.
+- If the partial trade does not happen, the seller can close the order, which returns the tokens to the seller, closes the vault, and refunds the lamports.
 
 ## Getting Started
 
@@ -57,17 +57,27 @@ This project is a smart contract built on the Solana, designed to facilitate lim
     ```bash
     anchor deploy
     ```
-   
+
+4. Install the packages required for testing
+
+    ```bash
+    yarn install
+    ```
+
+
 ### Testing
 
 1. Go To Anchor.toml and put your rpc-url and update your programID
     ```bash
     [registry]
-    url = "" //put your devnet rpc url
+    url = "" //put your devnet rpc url (Only if testing on Devnet)
     ```
    ```
+   [programs.localnet]
+   cega = "" // your new program ID
+   
    [programs.devent]
-   cega = "" // your program ID
+   cega = "" // your new program ID
    ```
 
 2. Go To wallet/wallet.ts and put private keys for Seller and Buyer for testing purposes
@@ -77,13 +87,21 @@ This project is a smart contract built on the Solana, designed to facilitate lim
     ```
 3. Go To tests/cega.ts and update the programId and put the mint for token "x" that seller wants to sell
     ```bash
-      const programId = new PublicKey(""); // Enter Your ProgramID
+      const programId = new PublicKey(""); // Enter your new programID
                                   &
       // token_x is the token that seller wants to sell                            
-      mint_x = new PublicKey(""); // Enter the mint for token_x 
+      mint_x = new PublicKey(""); // Enter the mint for token_x (Only if testing on Devnet)
     ```
-   
+
 4. Finally Test the Smart Contract by doing
     ```bash
-      anchor test
+      For Testing on Devnet -> anchor test
+                    &
+      For Testing on Localhost
+      1. solana-test-validator
+      2. anchor test --skip-local-validator 
     ```
+
+### Tests Results
+Note - Cancel test (which close the order) cannot run because a partial trade has already been made in a test above.
+![Test Result](./images/test.png)

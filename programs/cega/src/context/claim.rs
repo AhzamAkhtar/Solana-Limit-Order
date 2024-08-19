@@ -69,17 +69,17 @@ pub struct TransferBuyer<'info> {
 }
 
 impl<'info> TransferBuyer<'info> {
-    pub fn transfer_token_to_buyer_and_make_trade(&mut self) -> Result<()> {
+    pub fn transfer_token_to_buyer_and_make_trade(&mut self, amount: u64) -> Result<()> {
         self.check_expiry()?;
-        self.send_to_buyer()?;
-        self.send_usdc_to_seller()
+        self.send_to_buyer(amount)?;
+        self.send_usdc_to_seller(amount)
     }
 
     pub fn check_expiry(&self) -> Result<()> {
         self.config.check_expiry()
     }
 
-    pub fn send_to_buyer(&mut self) -> Result<()> {
+    pub fn send_to_buyer(&mut self, amount: u64) -> Result<()> {
         let cpi_accounts = TransferChecked {
             from: self.vault_x.to_account_info(),
             mint: self.mint_x.to_account_info(),
@@ -87,7 +87,7 @@ impl<'info> TransferBuyer<'info> {
             authority: self.auth.to_account_info(),
         };
 
-        let seeds = &[&b"new_auth"[..], &[self.config.auth_bump]];
+        let seeds = &[&b"auth"[..], &[self.config.auth_bump]];
 
         let signer_seeds = &[&seeds[..]];
 
@@ -97,11 +97,11 @@ impl<'info> TransferBuyer<'info> {
             signer_seeds,
         );
 
-        transfer_checked(ctx, self.config.amount, self.mint_x.decimals)
+        transfer_checked(ctx, amount, self.mint_x.decimals)
     }
 
-    pub fn send_usdc_to_seller(&mut self) -> Result<()> {
-        let amount = self.config.amount * self.config.price;
+    pub fn send_usdc_to_seller(&mut self, amount: u64) -> Result<()> {
+        let amount = amount * self.config.price;
 
         let cpi_accounts = TransferChecked {
             from: self.buyer_vault_usdc.to_account_info(),

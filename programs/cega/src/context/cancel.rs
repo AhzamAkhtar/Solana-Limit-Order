@@ -71,7 +71,7 @@ impl<'info> Cancel<'info> {
             authority: self.auth.to_account_info(),
         };
 
-        let seeds = &[&b"new_auth"[..], &[self.config.auth_bump]];
+        let seeds = &[&b"auth"[..], &[self.config.auth_bump]];
 
         let signer_seeds = &[&seeds[..]];
 
@@ -91,7 +91,7 @@ impl<'info> Cancel<'info> {
             authority: self.auth.to_account_info(),
         };
 
-        let seeds = &[&b"new_auth"[..], &[self.config.auth_bump]];
+        let seeds = &[&b"auth"[..], &[self.config.auth_bump]];
 
         let signer_seeds = &[&seeds[..]];
 

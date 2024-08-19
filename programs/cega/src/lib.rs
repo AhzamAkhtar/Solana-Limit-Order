@@ -31,12 +31,12 @@ pub mod cega {
         ctx.accounts.transfer_token()
     }
 
-    pub fn transfer_token_to_buyer(ctx: Context<TransferBuyer>) -> Result<()> {
-        ctx.accounts.transfer_token_to_buyer_and_make_trade()
+    pub fn transfer_token_to_buyer(ctx: Context<TransferBuyer>, amount: u64) -> Result<()> {
+        ctx.accounts.transfer_token_to_buyer_and_make_trade(amount)
     }
 
-    pub fn update(ctx: Context<Update>, new_amount: u64, new_expiry: u64) -> Result<()> {
-        ctx.accounts.update(new_amount, new_expiry)
+    pub fn update(ctx: Context<Update>, new_price: u64, new_expiry: u64) -> Result<()> {
+        ctx.accounts.update(new_price, new_expiry)
     }
 
     pub fn cancel(ctx: Context<Cancel>) -> Result<()> {

@@ -55,7 +55,7 @@ impl<'info> TransferTokenToVault<'info> {
         let cpi_accounts = TransferChecked {
             from: self.seller_vault_x.to_account_info(),
             mint: self.mint_x.to_account_info(),
-            to: self.mint_x.to_account_info(),
+            to: self.vault_x.to_account_info(),
             authority: self.seller.to_account_info(),
         };
 
