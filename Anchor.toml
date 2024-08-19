@@ -4,11 +4,14 @@ skip-lint = false
 [programs.localnet]
 cega = "CAxcPk6uf5a92YswtUVB94LCWD3sUJinpYJ8qLdpPCZA"
 
+[programs.devnet]
+cega = "CAxcPk6uf5a92YswtUVB94LCWD3sUJinpYJ8qLdpPCZA"
+
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "/home/ahzam/.config/solana/id.json"
 
 [scripts]
