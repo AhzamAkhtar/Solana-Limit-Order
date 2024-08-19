@@ -7,15 +7,15 @@ use anchor_spl::token_interface::{transfer_checked, Mint, TokenAccount, Transfer
 #[derive(Accounts)]
 pub struct TransferTokenToVault<'info> {
     #[account(mut)]
-    pub user: Signer<'info>,
+    pub seller: Signer<'info>,
 
     pub mint_x: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(
         init_if_needed,
-        payer = user,
+        payer = seller,
         associated_token::mint = mint_x,
-        associated_token::authority = user
+        associated_token::authority = seller
     )]
     pub user_vault_x: Box<InterfaceAccount<'info, TokenAccount>>,
 
@@ -45,16 +45,20 @@ pub struct TransferTokenToVault<'info> {
 }
 
 impl<'info> TransferTokenToVault<'info> {
-    pub fn transfer_token(&mut self, amount: u64) -> Result<()> {
+    pub fn transfer_token(&mut self) -> Result<()> {
+
+        // Assert that the amount is greater than zero
+        assert!(self.config.amount > 0, "Transfer amount must be greater than zero");
+
         let cpi_accounts = TransferChecked {
             from: self.user_vault_x.to_account_info(),
             mint: self.mint_x.to_account_info(),
             to: self.mint_x.to_account_info(),
-            authority: self.user.to_account_info(),
+            authority: self.seller.to_account_info(),
         };
 
         let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
 
-        transfer_checked(ctx, amount, self.mint_x.decimals)
+        transfer_checked(ctx, self.config.amount, self.mint_x.decimals)
     }
 }

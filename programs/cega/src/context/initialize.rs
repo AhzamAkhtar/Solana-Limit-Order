@@ -1,7 +1,10 @@
-use anchor_lang::prelude::*;
-use anchor_spl::{token_interface::{TokenAccount, Mint}, associated_token::AssociatedToken};
 use crate::state::Config;
+use anchor_lang::prelude::*;
 use anchor_spl::token_interface::TokenInterface;
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token_interface::{Mint, TokenAccount},
+};
 
 #[derive(Accounts)]
 #[instruction(seed:u64)]
@@ -28,7 +31,7 @@ pub struct Initialize<'info> {
         payer = user,
         seeds = [b"config", seed.to_le_bytes().as_ref()],
         bump,
-        space = Config::INIT_SPACE
+        space = Config::LEN
     )]
     pub config: Box<Account<'info, Config>>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -41,16 +44,21 @@ impl<'info> Initialize<'info> {
         &mut self,
         bumps: &InitializeBumps,
         seed: u64,
+        expiry: u64,
         authority: Option<Pubkey>,
+        amount: u64,
+        price: u64,
     ) -> Result<()> {
-        self.config.set_inner(
-            Config {
-                seed: seed,
-                authority: authority,
-                mint_x: self.mint_x.key(),
-                auth_bump: bumps.auth,
-                config_bump: bumps.config,
-            });
+        self.config.set_inner(Config {
+            seed: seed,
+            expiry: expiry,
+            authority: authority,
+            mint_x: self.mint_x.key(),
+            auth_bump: bumps.auth,
+            config_bump: bumps.config,
+            price: price,
+            amount: amount,
+        });
 
         Ok(())
     }

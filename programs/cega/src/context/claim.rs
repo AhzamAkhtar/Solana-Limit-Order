@@ -9,7 +9,12 @@ use anchor_spl::{
 pub struct TransferBuyer<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
+
+    /// CHECK:
+    pub seller: AccountInfo<'info>,
+
     pub mint_x: Box<InterfaceAccount<'info, Mint>>,
+    pub mint_usdc: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(
     mut,
@@ -25,6 +30,23 @@ pub struct TransferBuyer<'info> {
     associated_token::authority = buyer
     )]
     pub buyer_vault_x: Box<InterfaceAccount<'info, TokenAccount>>,
+
+    #[account(
+        init_if_needed,
+        payer = buyer,
+        associated_token::mint = mint_usdc,
+        associated_token::authority = buyer
+    )]
+    pub buyer_vault_usdc: Box<InterfaceAccount<'info, TokenAccount>>,
+
+    #[account(
+        init_if_needed,
+        payer = buyer,
+        associated_token::mint = mint_usdc,
+        associated_token::authority = seller
+    )]
+    pub seller_vault_usdc: Box<InterfaceAccount<'info, TokenAccount>>,
+
     ///CHECKED: This is not dangerous. It's just used for signing.
     #[account(
     seeds = [b"auth"],
@@ -47,7 +69,11 @@ pub struct TransferBuyer<'info> {
 }
 
 impl<'info> TransferBuyer<'info> {
-    pub fn send_to_buyer(&mut self, amount: u64) -> Result<()> {
+    pub fn check_expiry(&self) -> Result<()> {
+        self.config.check_expiry()
+    }
+
+    pub fn send_to_buyer(&mut self) -> Result<()> {
         let cpi_accounts = TransferChecked {
             from: self.vault_x.to_account_info(),
             mint: self.mint_x.to_account_info(),
@@ -65,6 +91,21 @@ impl<'info> TransferBuyer<'info> {
             signer_seeds,
         );
 
-        transfer_checked(ctx, amount, self.mint_x.decimals)
+        transfer_checked(ctx, self.config.amount, self.mint_x.decimals)
+    }
+
+    pub fn send_usdc_to_seller(&mut self) -> Result<()> {
+        let amount = self.config.amount * self.config.price;
+
+        let cpi_accounts = TransferChecked {
+            from: self.buyer_vault_usdc.to_account_info(),
+            mint: self.mint_usdc.to_account_info(),
+            to: self.seller_vault_usdc.to_account_info(),
+            authority: self.buyer.to_account_info(),
+        };
+
+        let ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
+
+        transfer_checked(ctx, amount, self.mint_usdc.decimals)
     }
 }

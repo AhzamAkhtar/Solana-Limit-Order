@@ -1,5 +1,5 @@
+use crate::errors::CustomErrors;
 use anchor_lang::prelude::*;
-
 #[account]
 
 pub struct Config {
@@ -8,8 +8,20 @@ pub struct Config {
     pub mint_x: Pubkey,
     pub auth_bump: u8,
     pub config_bump: u8,
+    pub expiry: u64,
+    pub amount : u64,
+    pub price : u64
 }
 
-impl Space for Config {
-    const INIT_SPACE: usize = 8 + 8 + (1 + 32) + 32 + (2 * 1);
+impl Config {
+    pub const LEN: usize = 8 + 8 + (1 + 32) + 32 + (2 * 1);
+
+    pub fn check_expiry(&self) -> Result<()> {
+        require!(
+            self.expiry > Clock::get()?.slot,
+            CustomErrors::TimeHasExpired
+        );
+        Ok(())
+    }
+
 }
