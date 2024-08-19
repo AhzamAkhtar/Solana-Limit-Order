@@ -9,6 +9,7 @@ declare_id!("CAxcPk6uf5a92YswtUVB94LCWD3sUJinpYJ8qLdpPCZA");
 
 #[program]
 pub mod cega {
+
     use super::*;
 
     pub fn initialize(
@@ -21,5 +22,9 @@ pub mod cega {
 
     pub fn transfer_token_to_vault(ctx: Context<TransferTokenToVault>, amount: u64) -> Result<()> {
         ctx.accounts.transfer_token(amount)
+    }
+
+    pub fn transfer_token_to_buyer(ctx: Context<TransferBuyer>, amount: u64) -> Result<()> {
+        ctx.accounts.send_to_buyer(amount)
     }
 }
