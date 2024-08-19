@@ -2,6 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Cega, IDL } from "../target/types/cega";
 import * as bs58 from "bs58";
+import {wallet, wallet_two} from "../wallet/wallet";
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey, Commitment, Keypair, SystemProgram } from "@solana/web3.js";
 import { randomBytes } from "crypto";

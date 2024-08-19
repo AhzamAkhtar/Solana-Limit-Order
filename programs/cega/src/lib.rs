@@ -32,9 +32,7 @@ pub mod cega {
     }
 
     pub fn transfer_token_to_buyer(ctx: Context<TransferBuyer>) -> Result<()> {
-        ctx.accounts.check_expiry()?;
-        ctx.accounts.send_to_buyer();
-        ctx.accounts.send_usdc_to_seller()
+        ctx.accounts.transfer_token_to_buyer_and_make_trade()
     }
 
     pub fn update(ctx: Context<Update>, new_amount: u64, new_expiry: u64) -> Result<()> {
@@ -42,7 +40,6 @@ pub mod cega {
     }
 
     pub fn cancel(ctx: Context<Cancel>) -> Result<()> {
-        ctx.accounts.send_to_buyer();
-        ctx.accounts.close_user_vault()
+        ctx.accounts.cancel()
     }
 }

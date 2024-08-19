@@ -1,4 +1,5 @@
 use crate::state::Config;
+use crate::errors::CustomErrors;
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
@@ -50,7 +51,19 @@ pub struct Cancel<'info> {
 }
 
 impl<'info> Cancel<'info> {
-    pub fn send_to_buyer(&mut self) -> Result<()> {
+
+    pub fn cancel(&mut self) -> Result<()> {
+
+        require!(
+            self.config.amount == self.config.amount_preserve,
+            CustomErrors::CannotClose
+        );
+
+        self.send_to_seller();
+        self.close_user_vault()
+    }
+
+    pub fn send_to_seller(&mut self) -> Result<()> {
         let cpi_accounts = TransferChecked {
             from: self.vault_x.to_account_info(),
             mint: self.mint_x.to_account_info(),

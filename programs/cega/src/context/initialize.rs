@@ -58,6 +58,7 @@ impl<'info> Initialize<'info> {
             config_bump: bumps.config,
             price: price,
             amount: amount,
+            amount_preserve: amount,
         });
 
         Ok(())

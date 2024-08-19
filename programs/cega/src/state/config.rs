@@ -10,7 +10,8 @@ pub struct Config {
     pub config_bump: u8,
     pub expiry: u64,
     pub amount : u64,
-    pub price : u64
+    pub price : u64,
+    pub amount_preserve : u64,
 }
 
 impl Config {

@@ -69,6 +69,12 @@ pub struct TransferBuyer<'info> {
 }
 
 impl<'info> TransferBuyer<'info> {
+    pub fn transfer_token_to_buyer_and_make_trade(&mut self) -> Result<()> {
+        self.check_expiry()?;
+        self.send_to_buyer()?;
+        self.send_usdc_to_seller()
+    }
+
     pub fn check_expiry(&self) -> Result<()> {
         self.config.check_expiry()
     }

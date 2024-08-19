@@ -6,4 +6,6 @@ pub enum CustomErrors {
     ZeroBalance,
     #[msg("Time has expired")]
     TimeHasExpired,
+    #[msg("Cant Close, Partial Trade Already Happend")]
+    CannotClose,
 }
