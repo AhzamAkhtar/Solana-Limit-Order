@@ -17,7 +17,7 @@ pub struct TransferTokenToVault<'info> {
         associated_token::mint = mint_x,
         associated_token::authority = seller
     )]
-    pub user_vault_x: Box<InterfaceAccount<'info, TokenAccount>>,
+    pub seller_vault_x: Box<InterfaceAccount<'info, TokenAccount>>,
 
     #[account(
         mut,
@@ -46,12 +46,14 @@ pub struct TransferTokenToVault<'info> {
 
 impl<'info> TransferTokenToVault<'info> {
     pub fn transfer_token(&mut self) -> Result<()> {
-
         // Assert that the amount is greater than zero
-        assert!(self.config.amount > 0, "Transfer amount must be greater than zero");
+        assert!(
+            self.config.amount > 0,
+            "Transfer amount must be greater than zero"
+        );
 
         let cpi_accounts = TransferChecked {
-            from: self.user_vault_x.to_account_info(),
+            from: self.seller_vault_x.to_account_info(),
             mint: self.mint_x.to_account_info(),
             to: self.mint_x.to_account_info(),
             authority: self.seller.to_account_info(),
