@@ -6,3 +6,6 @@ pub use TransferToken::*;
 
 pub mod Claim;
 pub use Claim::*;
+
+pub mod update;
+pub use update::*;

@@ -36,4 +36,8 @@ pub mod cega {
         ctx.accounts.send_to_buyer();
         ctx.accounts.send_usdc_to_seller()
     }
+
+    pub fn update(ctx: Context<Update>, new_amount: u64,new_expiry : u64) -> Result<()> {
+        ctx.accounts.update(new_amount,new_expiry)
+    }
 }
