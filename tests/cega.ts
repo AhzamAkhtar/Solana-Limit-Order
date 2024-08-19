@@ -193,6 +193,32 @@ describe("cega solana assignment", () => {
     }
   });
 
+  it("Cancel", async () => {
+    try {
+      const tx = await program.methods
+        .cancel()
+        .accountsStrict({
+          auth,
+          seller: seller.publicKey,
+          mintX: mint_x,
+          sellerVaultX: seller_x_ata,
+          vaultX: vault_x_ata,
+          config,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([seller])
+        .rpc({ skipPreflight: true });
+      await confirmTx(tx);
+      console.log("Your transaction signature", tx);
+    } catch (e) {
+      let err = e as anchor.AnchorError;
+      console.error(err);
+    }
+  });
+
+
   const confirmTx = async (signature: string) => {
     const latestBlockhash = await anchor
       .getProvider()
