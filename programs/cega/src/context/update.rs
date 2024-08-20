@@ -19,9 +19,10 @@ pub struct Update<'info> {
 }
 
 impl<'info> Update<'info> {
-    pub fn update(&mut self, new_price: u64 , new_expiry : u64) -> Result<()> {
+    pub fn update(&mut self, new_price: u64, new_expiry: u64) -> Result<()> {
+        self.config.set_expiry(new_expiry)?;
         self.config.price = new_price;
-        self.config.expiry = new_expiry;
+        msg!("New expiry after Update {}", self.config.expiry);
 
         Ok(())
     }

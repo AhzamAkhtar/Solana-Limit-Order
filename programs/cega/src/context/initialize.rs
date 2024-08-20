@@ -40,18 +40,21 @@ pub struct Initialize<'info> {
 }
 
 impl<'info> Initialize<'info> {
+    pub fn set_expiry(&mut self, expiry: u64) -> Result<()> {
+        self.config.set_expiry(expiry)
+    }
+
     pub fn init(
         &mut self,
         bumps: &InitializeBumps,
         seed: u64,
-        expiry: u64,
         authority: Option<Pubkey>,
         amount: u64,
         price: u64,
     ) -> Result<()> {
         self.config.set_inner(Config {
             seed: seed,
-            expiry: expiry,
+            expiry: self.config.expiry,
             authority: authority,
             mint_x: self.mint_x.key(),
             auth_bump: bumps.auth,
@@ -60,6 +63,7 @@ impl<'info> Initialize<'info> {
             amount: amount,
             amount_preserve: amount,
         });
+        msg!("Expiry Time: {}", self.config.expiry);
 
         Ok(())
     }

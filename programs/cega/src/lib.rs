@@ -23,8 +23,9 @@ pub mod cega {
         amount: u64,
         price: u64,
     ) -> Result<()> {
+        ctx.accounts.set_expiry(expiry)?;
         ctx.accounts
-            .init(&ctx.bumps, seed, expiry, authority, amount, price)
+            .init(&ctx.bumps, seed, authority, amount, price)
     }
 
     pub fn transfer_token_to_vault(ctx: Context<TransferTokenToVault>) -> Result<()> {
