@@ -1,9 +1,9 @@
+use crate::errors::CustomErrors;
 use crate::Config;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token_interface::TokenInterface;
 use anchor_spl::token_interface::{transfer_checked, Mint, TokenAccount, TransferChecked};
-use crate::errors::CustomErrors;
 #[derive(Accounts)]
 pub struct TransferTokenToVault<'info> {
     #[account(mut)]
@@ -46,11 +46,8 @@ pub struct TransferTokenToVault<'info> {
 
 impl<'info> TransferTokenToVault<'info> {
     pub fn transfer_token(&mut self) -> Result<()> {
-        // Assert that the amount is greater than zero
-        require!(
-            self.config.amount > 0,
-            CustomErrors::ZeroAmount
-        );
+        // The deposit amount should be greater than zero
+        require!(self.config.amount > 0, CustomErrors::ZeroAmount);
 
         let cpi_accounts = TransferChecked {
             from: self.seller_vault_x.to_account_info(),

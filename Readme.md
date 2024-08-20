@@ -72,7 +72,7 @@ This project is a smart contract built on the Solana, designed to facilitate lim
    [programs.localnet]
    cega = "" // your new program ID
     ```
-3. Go To tests/cega.ts and update the programId and put the mint for token "x" that seller wants to sell
+3. Go To tests/cega.ts and update the programId
     ```bash
       const programId = new PublicKey(""); // Enter your new programID
     ```
