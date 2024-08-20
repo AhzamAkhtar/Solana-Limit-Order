@@ -68,40 +68,22 @@ This project is a smart contract built on the Solana, designed to facilitate lim
 ### Testing
 
 1. Go To Anchor.toml and put your rpc-url and update your programID
-    ```bash
-    [registry]
-    url = "" //put your devnet rpc url (Only if testing on Devnet)
-    ```
-   ```
+   ```bash
    [programs.localnet]
    cega = "" // your new program ID
-   
-   [programs.devent]
-   cega = "" // your new program ID
-   ```
-
-2. Go To wallet/wallet.ts and put private keys for Seller and Buyer for testing purposes
-    ```bash
-    export const wallet_for_seller = ""; 
-    export const wallet_for_buyer = "";
     ```
 3. Go To tests/cega.ts and update the programId and put the mint for token "x" that seller wants to sell
     ```bash
       const programId = new PublicKey(""); // Enter your new programID
-                                  &
-      // token_x is the token that seller wants to sell                            
-      mint_x = new PublicKey(""); // Enter the mint for token_x (Only if testing on Devnet)
     ```
 
 4. Finally Test the Smart Contract by doing
     ```bash
-      For Testing on Devnet -> anchor test
-                    &
       For Testing on Localhost
       1. solana-test-validator
       2. anchor test --skip-local-validator 
     ```
 
-### Tests Results
+### Tests Results on Localhost
 Note - Cancel test (which close the order) cannot run because a partial trade has already been made in a test above.
-![Test Result](./images/test.png)
+![Alt text](./images/test.png)

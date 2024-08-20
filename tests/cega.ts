@@ -2,7 +2,6 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Cega, IDL } from "../target/types/cega";
 import * as bs58 from "bs58";
-import { wallet_for_seller, wallet_for_buyer } from "../wallet/wallet";
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey, Commitment, Keypair, SystemProgram } from "@solana/web3.js";
 import { randomBytes } from "crypto";
@@ -32,8 +31,8 @@ describe("cega solana assignment", () => {
     anchor.getProvider()
   );
 
-  const seller = Keypair.fromSecretKey(bs58.decode(wallet_for_seller));
-  const buyer = Keypair.fromSecretKey(bs58.decode(wallet_for_buyer));
+  const seller = Keypair.generate();
+  const buyer = Keypair.generate();
   // Random seed
   const seed = new BN(randomBytes(8));
 
@@ -88,10 +87,6 @@ describe("cega solana assignment", () => {
   });
 
   it("Create mints, tokens and ATAs", async () => {
-    // token_x and token_usdc mint (reqire when testing on devnet)
-    // mint_x = new PublicKey("");
-    // mint_usdc = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr");
-    //
 
     seller_x_ata = await getAssociatedTokenAddress(
       mint_x,
