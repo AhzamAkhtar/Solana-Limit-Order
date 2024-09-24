@@ -1,4 +1,4 @@
-# CegaFi Solana Assignment
+# Solana Limit Order Implementation
 
 This project is a smart contract built on the Solana, designed to facilitate limit order trading of tokens. The program allows users to create, update, and manage limit orders, offering flexibility in trading while ensuring security and transparency.
 
